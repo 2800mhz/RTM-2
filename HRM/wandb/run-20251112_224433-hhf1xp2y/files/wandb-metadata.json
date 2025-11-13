@@ -1,0 +1,26 @@
+{
+  "os":  "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.12",
+  "startedAt":  "2025-11-12T22:44:33.633204Z",
+  "args":  [
+    "--mode",
+    "pretrain",
+    "--resume_from",
+    "checkpoints/Sudoku-extreme-1k-aug-1000 HRM-Free-Meta/Pretrain-HRMFreeMeta-bald-emu/checkpoint_latest.pt",
+    "--reset_optimizer",
+    "--epochs",
+    "50",
+    "--batch_size",
+    "16",
+    "--lr",
+    "5e-5"
+  ],
+  "program":  "/workspace/hrm/unified_training.py",
+  "codePath":  "unified_training.py",
+  "codePathLocal":  "unified_training.py",
+  "email":  "gcmsx3@gmail.com",
+  "root":  "/workspace/hrm",
+  "host":  "8a80fab57ed7",
+  "executable":  "/usr/bin/python",
+  "writerId":  "10k6qjxb67x2msk540p9apnuwcub0azx"
+}

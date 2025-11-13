@@ -1,0 +1,266 @@
+# =============================================================================
+# 🎯 HRM-FREE-META UNIFIED TRAINING CONFIG
+# Replaces: cfg_pretrain.yaml, cfg_pretrain_meta.yaml, meta_training.yaml
+# =============================================================================
+
+# Hydra configuration
+defaults:
+  - _self_
+
+hydra:
+  output_subdir: null
+
+# =============================================================================
+# 🎮 TRAINING MODE
+# =============================================================================
+# "pretrain" - Standard supervised learning (replaces cfg_pretrain.yaml)
+# "meta"     - Meta-learning MAML style (replaces meta_training.yaml)
+mode: pretrain
+
+# =============================================================================
+# 🏗️ ARCHITECTURE (replaces arch/*.yaml files)
+# =============================================================================
+arch:
+  # Model selection
+  # For standard HRM: "hrm.hrm_act_v1@HierarchicalReasoningModel_ACTV1"
+  # For meta-learning: "hrm.hrm_free_meta@HRMFreeMeta"
+  name: "hrm.hrm_free_meta@HRMFreeMeta"
+  
+  # Loss head configuration
+  loss:
+    name: "losses@ACTLossHead"  # Standard: ACTLossHead, Meta: MetaLearningLossHead
+    loss_type: "stablemax_cross_entropy"
+    
+    # Meta-learning loss coefficients (only used with MetaLearningLossHead)
+    alpha_kl: 0.001           # KL divergence coefficient
+    beta_entropy: 0.01        # Gate entropy regularization
+  
+  # -------------------------------------------------------------------------
+  # HRM Core Parameters (from hrm_v1.yaml & hrm_free_meta_v1.yaml)
+  # -------------------------------------------------------------------------
+  
+  # ACT (Adaptive Computation Time)
+  halt_exploration_prob: 0.1
+  halt_max_steps: 16
+  
+  # Reasoning cycles
+  H_cycles: 2
+  L_cycles: 2
+  
+  # Transformer layers
+  H_layers: 4
+  L_layers: 4
+  
+  # Model dimensions
+  hidden_size: 512
+  num_heads: 8
+  expansion: 4
+  
+  # Embeddings
+  puzzle_emb_ndim: 512      # Should match hidden_size
+  pos_encodings: "rope"
+  rope_theta: 10000.0
+  rms_norm_eps: 1.0e-5
+  
+  # -------------------------------------------------------------------------
+  # Meta-Learning Components (from hrm_free_meta_v1.yaml)
+  # Only used when arch.name = HRMFreeMeta
+  # -------------------------------------------------------------------------
+  z_dim: 128                    # Latent context dimension
+  encoder_layers: 2             # Latent encoder depth
+  controller_hidden: 256        # Meta controller hidden size
+  gate_temperature: 1.0         # Softmax temperature for gates
+  use_dynamic_weighting: true   # Enable dynamic H/L weighting
+  
+  # Technical
+  forward_dtype: "bfloat16"
+
+# =============================================================================
+# 📦 DATA (from cfg_pretrain.yaml & meta_training.yaml)
+# =============================================================================
+data_path: "data/sudoku-extreme-1k-aug-1000/train"  # Options: arc-aug-1000, sudoku-extreme-1k-aug-1000
+
+# =============================================================================
+# 🎓 TRAINING HYPERPARAMETERS
+# =============================================================================
+
+# -------------------------------------------------------------------------
+# Standard Pretraining (from cfg_pretrain.yaml)
+# -------------------------------------------------------------------------
+global_batch_size: 768
+epochs: 100000
+eval_interval: 10000
+checkpoint_every_eval: true
+
+# Learning rate schedule
+lr: 0.0001                # 1e-4
+lr_min_ratio: 1.0         # No decay by default (set to 0.1 for cosine decay)
+lr_warmup_steps: 2000
+
+# Optimizer (Llama-style settings)
+weight_decay: 0.1
+beta1: 0.9
+beta2: 0.95
+
+# Puzzle embeddings (from cfg_pretrain.yaml)
+puzzle_emb_lr: 0.01       # 1e-2
+puzzle_emb_weight_decay: 0.1
+
+# Gradient clipping
+grad_clip: 1.0
+
+# =============================================================================
+# 🧠 META-LEARNING CONFIG (from meta_training.yaml)
+# Only used when mode=meta
+# =============================================================================
+meta:
+  enabled: false  # Set to true when using mode=meta
+  
+  # Task setup (from meta_training.yaml)
+  n_support: 16              # Support set size per task
+  n_query: 16                # Query set size per task
+  task_batch_size: 4         # Tasks per meta-batch
+  meta_batches_per_epoch: 20 # Meta-batches per epoch
+  
+  # Inner loop (task adaptation)
+  inner_steps: 5             # K gradient steps for inner loop
+  inner_lr: 0.001            # 1e-3 - Inner loop learning rate
+  
+  # Outer loop (meta-update)
+  # Uses main 'lr' parameter above
+  
+  # Adaptive meta loss weighting
+  kl_weight_start: 0.0001
+  kl_weight_end: 0.001
+  kl_warmup_steps: 5000
+  
+  # Additional meta-learning coefficients (from meta_training.yaml)
+  entropy_weight: 0.01
+  diversity_weight: -0.01    # Negative for maximizing variance
+  
+  # Controller learning rate ratio (from meta_training.yaml)
+  controller_lr_ratio: 0.5   # controller LR = 0.5 * main LR
+
+# =============================================================================
+# 💾 EPISODIC MEMORY (from meta_training.yaml)
+# Only used when mode=meta
+# =============================================================================
+memory:
+  enabled: false             # Enable episodic memory
+  capacity: 1000
+  use_hints: true            # Use memory for initialization
+  hint_weight: 0.3           # Blend ratio for memory hints
+
+# =============================================================================
+# 📊 LOGGING & CHECKPOINTING
+# =============================================================================
+project_name: null           # Auto-generated: "{Dataset} HRM-Free-Meta"
+run_name: null               # Auto-generated: "{Mode}-{Model}-{random}"
+checkpoint_path: null        # Auto-generated: "checkpoints/{project}/{run}"
+
+log_interval: 10
+
+# Evaluation outputs to save (from cfg_pretrain_meta.yaml)
+eval_save_outputs: []        # Options: ["logits", "z_context", "gates"]
+
+# Weights & Biases
+wandb_enabled: true
+
+# =============================================================================
+# 🔧 MISC
+# =============================================================================
+seed: 42
+
+# =============================================================================
+# 📝 PRESET CONFIGURATIONS
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# PRESET 1: Standard HRM Pretraining (Original cfg_pretrain.yaml)
+# ---------------------------------------------------------------------------
+# mode: pretrain
+# arch.name: "hrm.hrm_act_v1@HierarchicalReasoningModel_ACTV1"
+# arch.loss.name: "losses@ACTLossHead"
+# data_path: "data/arc-aug-1000"
+# global_batch_size: 768
+# epochs: 100000
+# lr: 1e-4
+# puzzle_emb_lr: 1e-2
+
+# ---------------------------------------------------------------------------
+# PRESET 2: HRM-Free-Meta Pretraining (cfg_pretrain_meta.yaml)
+# ---------------------------------------------------------------------------
+# mode: pretrain
+# arch.name: "hrm.hrm_free_meta@HRMFreeMeta"
+# arch.loss.name: "hrm.meta_loss_head@MetaLearningLossHead"
+# data_path: "data/sudoku-extreme-1k-aug-1000"
+# global_batch_size: 384
+# epochs: 20000
+# lr: 7e-5
+# eval_interval: 2000
+# eval_save_outputs: ["z_context", "gates"]
+
+# ---------------------------------------------------------------------------
+# PRESET 3: Meta-Learning Training (meta_training.yaml)
+# ---------------------------------------------------------------------------
+# mode: meta
+# meta.enabled: true
+# arch.name: "hrm.hrm_free_meta@HRMFreeMeta"
+# arch.loss.name: "hrm.meta_loss_head@MetaLearningLossHead"
+# data_path: "data/sudoku-extreme-1k-aug-1000"
+# global_batch_size: 32  # Smaller for meta-learning
+# epochs: 50
+# meta.n_support: 16
+# meta.n_query: 16
+# meta.task_batch_size: 4
+# meta.inner_steps: 5
+# meta.inner_lr: 1e-3
+
+# ---------------------------------------------------------------------------
+# PRESET 4: Laptop/Limited GPU Config (from meta_training.yaml comments)
+# ---------------------------------------------------------------------------
+# arch.hidden_size: 128
+# arch.H_layers: 1
+# arch.L_layers: 1
+# arch.z_dim: 32
+# arch.encoder_layers: 1
+# arch.controller_hidden: 64
+# global_batch_size: 16
+# meta.task_batch_size: 2
+# meta.n_support: 3
+# meta.n_query: 5
+
+# =============================================================================
+# 🚀 USAGE EXAMPLES
+# =============================================================================
+
+# Example 1: Standard HRM pretraining (replaces cfg_pretrain.yaml)
+# python unified_training.py mode=pretrain \
+#     arch.name="hrm.hrm_act_v1@HierarchicalReasoningModel_ACTV1" \
+#     arch.loss.name="losses@ACTLossHead"
+
+# Example 2: HRM-Free-Meta pretraining (replaces cfg_pretrain_meta.yaml)
+# python unified_training.py mode=pretrain \
+#     arch.name="hrm.hrm_free_meta@HRMFreeMeta" \
+#     arch.loss.name="hrm.meta_loss_head@MetaLearningLossHead" \
+#     data_path="data/sudoku-extreme-1k-aug-1000" \
+#     global_batch_size=384 \
+#     lr=7e-5
+
+# Example 3: Meta-learning training (replaces meta_training.yaml)
+# python unified_training.py mode=meta \
+#     meta.enabled=true \
+#     global_batch_size=32 \
+#     epochs=50
+
+# Example 4: Quick laptop test
+# python unified_training.py mode=pretrain \
+#     arch.hidden_size=128 \
+#     arch.H_layers=1 \
+#     arch.L_layers=1 \
+#     global_batch_size=16 \
+#     epochs=100
+
+# Example 5: Distributed training
+# torchrun --nproc_per_node=4 unified_training.py mode=pretrain \
+#     global_batch_size=3072

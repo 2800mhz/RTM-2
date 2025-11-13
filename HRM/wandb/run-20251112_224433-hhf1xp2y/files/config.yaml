@@ -1,0 +1,139 @@
+_wandb:
+    value:
+        cli_version: 0.22.3
+        e:
+            10k6qjxb67x2msk540p9apnuwcub0azx:
+                args:
+                    - --mode
+                    - pretrain
+                    - --resume_from
+                    - checkpoints/Sudoku-extreme-1k-aug-1000 HRM-Free-Meta/Pretrain-HRMFreeMeta-bald-emu/checkpoint_latest.pt
+                    - --reset_optimizer
+                    - --epochs
+                    - "50"
+                    - --batch_size
+                    - "16"
+                    - --lr
+                    - "5e-5"
+                codePath: unified_training.py
+                codePathLocal: unified_training.py
+                email: gcmsx3@gmail.com
+                executable: /usr/bin/python
+                host: 8a80fab57ed7
+                os: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35
+                program: /workspace/hrm/unified_training.py
+                python: CPython 3.10.12
+                root: /workspace/hrm
+                startedAt: "2025-11-12T22:44:33.633204Z"
+                writerId: 10k6qjxb67x2msk540p9apnuwcub0azx
+        m: []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 1
+                - 50
+            "2":
+                - 1
+                - 50
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.10.12
+            "5": 0.22.3
+            "12": 0.22.3
+            "13": linux-x86_64
+arch:
+    value:
+        H_cycles: 2
+        H_layers: 4
+        L_cycles: 2
+        L_layers: 4
+        controller_hidden: 256
+        encoder_layers: 2
+        expansion: 4
+        forward_dtype: bfloat16
+        gate_temperature: 1
+        halt_exploration_prob: 0.1
+        halt_max_steps: 16
+        hidden_size: 512
+        loss:
+            alpha_kl: 0.001
+            beta_entropy: 0.01
+            loss_type: stablemax_cross_entropy
+            name: meta_loss_head@MetaLearningLossHead
+        name: hrm.hrm_free_meta@HRMFreeMeta
+        num_heads: 8
+        pos_encodings: rope
+        puzzle_emb_ndim: 512
+        rms_norm_eps: 1e-05
+        rope_theta: 10000
+        use_dynamic_weighting: true
+        z_dim: 128
+beta1:
+    value: 0.9
+beta2:
+    value: 0.999
+checkpoint_every_eval:
+    value: true
+checkpoint_path:
+    value: checkpoints/Sudoku-extreme-1k-aug-1000 HRM-Free-Meta/Pretrain-HRMFreeMeta-astute-ibex
+data_path:
+    value: data/sudoku-extreme-1k-aug-1000
+epochs:
+    value: 50
+eval_interval:
+    value: null
+eval_save_outputs:
+    value: []
+global_batch_size:
+    value: 16
+grad_clip:
+    value: 1
+log_interval:
+    value: 10
+lr:
+    value: 5e-05
+lr_min_ratio:
+    value: 0.1
+lr_warmup_steps:
+    value: 1000
+meta:
+    value:
+        enabled: false
+        inner_lr: 0.001
+        inner_steps: 5
+        kl_warmup_steps: 5000
+        kl_weight_end: 0.001
+        kl_weight_start: 0.0001
+        meta_batches_per_epoch: 100
+        n_query: 10
+        n_support: 5
+        task_batch_size: 4
+mode:
+    value: pretrain
+project_name:
+    value: Sudoku-extreme-1k-aug-1000 HRM-Free-Meta
+puzzle_emb_lr:
+    value: 0.0001
+puzzle_emb_weight_decay:
+    value: 0
+reset_lr_schedule:
+    value: false
+reset_optimizer:
+    value: true
+resume_auto:
+    value: false
+resume_epoch_offset:
+    value: 0
+resume_from:
+    value: checkpoints/Sudoku-extreme-1k-aug-1000 HRM-Free-Meta/Pretrain-HRMFreeMeta-bald-emu/checkpoint_latest.pt
+run_name:
+    value: Pretrain-HRMFreeMeta-astute-ibex
+seed:
+    value: 0
+wandb_enabled:
+    value: true
+weight_decay:
+    value: 0.1

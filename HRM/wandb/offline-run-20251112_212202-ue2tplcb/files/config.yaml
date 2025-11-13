@@ -1,0 +1,167 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.22.3
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1762982522
+    t:
+      1:
+      - 1
+      - 50
+      2:
+      - 1
+      - 50
+      3:
+      - 2
+      - 4
+      - 13
+      - 16
+      - 42
+      - 61
+      4: 3.10.12
+      5: 0.22.3
+      13: linux-x86_64
+    e:
+      hy74i0llmnf96lu36uwa0odr5d5bm699:
+        os: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35
+        python: CPython 3.10.12
+        started_at: '2025-11-12T21:22:02.196775Z'
+        args:
+        - --mode
+        - pretrain
+        - --epochs
+        - '2'
+        program: /workspace/hrm/unified_training.py
+        code_path: unified_training.py
+        code_path_local: unified_training.py
+        root: /workspace/hrm
+        host: 8a80fab57ed7
+        executable: /usr/bin/python
+        writer_id: hy74i0llmnf96lu36uwa0odr5d5bm699
+mode:
+  desc: null
+  value: pretrain
+arch:
+  desc: null
+  value:
+    name: hrm.hrm_free_meta@HRMFreeMeta
+    loss:
+      name: meta_loss_head@MetaLearningLossHead
+      loss_type: stablemax_cross_entropy
+      alpha_kl: 0.001
+      beta_entropy: 0.01
+    halt_exploration_prob: 0.1
+    halt_max_steps: 16
+    H_cycles: 2
+    L_cycles: 2
+    H_layers: 4
+    L_layers: 4
+    hidden_size: 512
+    num_heads: 8
+    expansion: 4
+    puzzle_emb_ndim: 512
+    pos_encodings: rope
+    rope_theta: 10000.0
+    rms_norm_eps: 1.0e-05
+    z_dim: 128
+    encoder_layers: 2
+    controller_hidden: 256
+    gate_temperature: 1.0
+    use_dynamic_weighting: true
+    forward_dtype: bfloat16
+data_path:
+  desc: null
+  value: data/sudoku-extreme-1k-aug-1000
+global_batch_size:
+  desc: null
+  value: 32
+epochs:
+  desc: null
+  value: 2
+lr:
+  desc: null
+  value: 0.0001
+lr_min_ratio:
+  desc: null
+  value: 0.1
+lr_warmup_steps:
+  desc: null
+  value: 1000
+weight_decay:
+  desc: null
+  value: 0.1
+beta1:
+  desc: null
+  value: 0.9
+beta2:
+  desc: null
+  value: 0.999
+puzzle_emb_lr:
+  desc: null
+  value: 0.0001
+puzzle_emb_weight_decay:
+  desc: null
+  value: 0.0
+meta:
+  desc: null
+  value:
+    enabled: false
+    n_support: 5
+    n_query: 10
+    inner_steps: 5
+    inner_lr: 0.001
+    task_batch_size: 4
+    meta_batches_per_epoch: 100
+    kl_weight_start: 0.0001
+    kl_weight_end: 0.001
+    kl_warmup_steps: 5000
+project_name:
+  desc: null
+  value: Sudoku-extreme-1k-aug-1000 HRM-Free-Meta
+run_name:
+  desc: null
+  value: Pretrain-HRMFreeMeta-bald-emu
+checkpoint_path:
+  desc: null
+  value: checkpoints/Sudoku-extreme-1k-aug-1000 HRM-Free-Meta/Pretrain-HRMFreeMeta-bald-emu
+checkpoint_every_eval:
+  desc: null
+  value: true
+eval_interval:
+  desc: null
+  value: null
+eval_save_outputs:
+  desc: null
+  value: []
+log_interval:
+  desc: null
+  value: 10
+wandb_enabled:
+  desc: null
+  value: true
+seed:
+  desc: null
+  value: 0
+grad_clip:
+  desc: null
+  value: 1.0
+resume_from:
+  desc: null
+  value: null
+resume_auto:
+  desc: null
+  value: false
+reset_optimizer:
+  desc: null
+  value: false
+reset_lr_schedule:
+  desc: null
+  value: false
+resume_epoch_offset:
+  desc: null
+  value: 0
