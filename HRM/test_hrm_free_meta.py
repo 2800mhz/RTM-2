@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-HRM-Free-Meta Quick Test Script (Fixed for new HRM version)
+HRM-Free-Meta quick smoke test.
 """
-print("gpt tarafından yapılan versiyon denemesei 3333")
 import sys
 import torch
 import torch.nn as nn
@@ -97,6 +96,7 @@ try:
         'pos_encodings': 'rope',
         'puzzle_emb_ndim': 256,
         'halt_exploration_prob': 0.05,
+        'forward_dtype': 'bfloat16',
 
     }
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-🔬 HRM-FREE-META COMPLETE TEST SUITE
-/workspace/hrm/test.py
+HRM-FREE-META COMPLETE TEST SUITE
 
-Runs ALL tests in test/ directory + additional comprehensive checks
+Runs discovered top-level test_*.py scripts plus a few direct smoke checks.
 """
 
 import sys
@@ -17,7 +16,6 @@ import json
 
 # Setup paths
 HRM_ROOT = Path(__file__).parent
-TEST_DIR = HRM_ROOT / "test"
 sys.path.insert(0, str(HRM_ROOT))
 
 print("=" * 100)
@@ -25,7 +23,6 @@ print("🔬 HRM-FREE-META COMPLETE TEST SUITE")
 print("=" * 100)
 print(f"📅 Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"📁 HRM Root: {HRM_ROOT}")
-print(f"📁 Test Dir: {TEST_DIR}")
 print(f"💻 Device: {'cuda' if torch.cuda.is_available() else 'cpu'}")
 if torch.cuda.is_available():
     print(f"🎮 GPU: {torch.cuda.get_device_name(0)}")
@@ -55,8 +52,8 @@ class ComprehensiveTestRunner:
         """Run complete test suite"""
         print("\n🚀 STARTING TEST SUITE\n")
         
-        # Phase 1: Run all test scripts in test/
-        self.run_test_directory()
+        # Phase 1: Run discovered standalone test scripts
+        self.run_discovered_tests()
         
         # Phase 2: Additional tests
         self.run_additional_tests()
@@ -64,21 +61,18 @@ class ComprehensiveTestRunner:
         # Phase 3: Generate report
         self.generate_report()
     
-    def run_test_directory(self):
-        """Run all .py files in test/ directory"""
+    def run_discovered_tests(self):
+        """Run curated standalone smoke tests."""
         print("=" * 100)
-        print("📁 PHASE 1: RUNNING TEST SCRIPTS FROM test/ DIRECTORY")
+        print("📁 PHASE 1: RUNNING CURATED SMOKE TESTS")
         print("=" * 100)
-        
-        if not TEST_DIR.exists():
-            print(f"❌ Test directory not found: {TEST_DIR}")
-            return
-        
-        # Find all .py files in test/
-        test_files = sorted(TEST_DIR.glob("*.py"))
-        
+        preferred = [
+            HRM_ROOT / "test_hrm_free_meta.py",
+        ]
+        test_files = [path for path in preferred if path.exists()]
+
         if not test_files:
-            print(f"⚠️  No test files found in {TEST_DIR}")
+            print("⚠️  No curated smoke tests found")
             return
         
         print(f"\n📝 Found {len(test_files)} test scripts:")

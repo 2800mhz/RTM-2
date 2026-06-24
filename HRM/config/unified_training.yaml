@@ -13,8 +13,8 @@ hydra:
 # =============================================================================
 # 🎮 TRAINING MODE
 # =============================================================================
-# "pretrain" - Standard supervised learning (replaces cfg_pretrain.yaml)
-# "meta"     - Meta-learning MAML style (replaces meta_training.yaml)
+# "pretrain" - supervised training with the selected loss head
+# "meta"     - task-level meta-learning loop
 mode: pretrain
 
 # =============================================================================
@@ -22,13 +22,15 @@ mode: pretrain
 # =============================================================================
 arch:
   # Model selection
-  # For standard HRM: "hrm.hrm_act_v1@HierarchicalReasoningModel_ACTV1"
-  # For meta-learning: "hrm.hrm_free_meta@HRMFreeMeta"
+  # Standard HRM: "hrm.hrm_act_v1@HierarchicalReasoningModel_ACTV1"
+  # HRM-Free-Meta: "hrm.hrm_free_meta@HRMFreeMeta"
   name: "hrm.hrm_free_meta@HRMFreeMeta"
   
   # Loss head configuration
   loss:
-    name: "losses@ACTLossHead"  # Standard: ACTLossHead, Meta: MetaLearningLossHead
+    # Use meta_loss_head when arch.name = HRMFreeMeta.
+    # Use losses@ACTLossHead for the original HRM model.
+    name: "meta_loss_head@MetaLearningLossHead"
     loss_type: "stablemax_cross_entropy"
     
     # Meta-learning loss coefficients (only used with MetaLearningLossHead)
@@ -78,7 +80,7 @@ arch:
 # =============================================================================
 # 📦 DATA (from cfg_pretrain.yaml & meta_training.yaml)
 # =============================================================================
-data_path: "data/sudoku-extreme-1k-aug-1000/train"  # Options: arc-aug-1000, sudoku-extreme-1k-aug-1000
+data_path: "data/sudoku-extreme-1k-aug-1000"
 
 # =============================================================================
 # 🎓 TRAINING HYPERPARAMETERS
@@ -192,7 +194,7 @@ seed: 42
 # ---------------------------------------------------------------------------
 # mode: pretrain
 # arch.name: "hrm.hrm_free_meta@HRMFreeMeta"
-# arch.loss.name: "hrm.meta_loss_head@MetaLearningLossHead"
+# arch.loss.name: "meta_loss_head@MetaLearningLossHead"
 # data_path: "data/sudoku-extreme-1k-aug-1000"
 # global_batch_size: 384
 # epochs: 20000
@@ -206,7 +208,7 @@ seed: 42
 # mode: meta
 # meta.enabled: true
 # arch.name: "hrm.hrm_free_meta@HRMFreeMeta"
-# arch.loss.name: "hrm.meta_loss_head@MetaLearningLossHead"
+# arch.loss.name: "meta_loss_head@MetaLearningLossHead"
 # data_path: "data/sudoku-extreme-1k-aug-1000"
 # global_batch_size: 32  # Smaller for meta-learning
 # epochs: 50
@@ -242,7 +244,7 @@ seed: 42
 # Example 2: HRM-Free-Meta pretraining (replaces cfg_pretrain_meta.yaml)
 # python unified_training.py mode=pretrain \
 #     arch.name="hrm.hrm_free_meta@HRMFreeMeta" \
-#     arch.loss.name="hrm.meta_loss_head@MetaLearningLossHead" \
+#     arch.loss.name="meta_loss_head@MetaLearningLossHead" \
 #     data_path="data/sudoku-extreme-1k-aug-1000" \
 #     global_batch_size=384 \
 #     lr=7e-5
