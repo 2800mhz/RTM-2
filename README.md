@@ -1,6 +1,6 @@
 # RTM-2
 
-RTM-2 is an experimental reasoning project built on top of HRM (Hierarchical
+RTM-2 (ReThinking Mind 2)is an experimental reasoning project built on top of HRM (Hierarchical
 Reasoning Model), with a local research branch focused on making the model more
 adaptive, more context-aware, and a little closer to what we informally kept
 calling a "sixth-sense" style of reasoning.
